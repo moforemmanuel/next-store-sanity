@@ -23,10 +23,32 @@ const layerStyles = {
   },
 };
 
+const textStyles = {};
+
+const components = {
+  Link: {
+    baseStyle: {
+      '&:hover': { textDecoration: 'none' },
+    },
+  },
+};
+
+const global = () => ({
+  a: {
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
+});
+
 const theme = extendTheme({
   config,
   fonts,
   layerStyles,
+  components,
+  // styles: {
+  //   global,
+  // },
 });
 
 export default theme;
