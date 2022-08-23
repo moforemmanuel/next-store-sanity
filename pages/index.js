@@ -1,5 +1,8 @@
 import {
   Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   CircularProgress,
   GridItem,
   SimpleGrid,
@@ -18,6 +21,21 @@ export default function Home({ products, error }) {
   //   setLoading(false);
   // }, [products]);
 
+  React.useEffect(
+    (toast, error) => {
+      function displayToast() {
+        toast({
+          title: 'Error Message',
+          status: 'error',
+          description: error,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
+    },
+    [error]
+  );
+
   const toast = useToast();
 
   // if (loading) {
@@ -28,16 +46,23 @@ export default function Home({ products, error }) {
   //   );
   // }
 
+  {
+    /* {error ? (
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle>An Error Occurred</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert> */
+  }
+
   return (
     <Layout>
       {error ? (
-        toast({
-          title: 'Error Message',
-          status: 'error',
-          description: error,
-          isClosable: true,
-          position: 'top-right',
-        })
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle>An Error Occurred</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
           {products?.map((product) => (
@@ -58,6 +83,7 @@ export async function getStaticProps() {
     products = await client.fetch(`*[_type == "product"]`);
     console.log(products);
   } catch (err) {
+    console.log(err);
     error = err.message;
   }
 

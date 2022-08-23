@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   chakra,
+  Circle,
   Flex,
   Heading,
   Image,
@@ -12,6 +13,7 @@ import React from 'react';
 import NextLink from 'next/link';
 import NextImage from 'next/image';
 import urlForThumbnail from '../../utils/sanityImageBuilder';
+import StarRatings from 'react-star-ratings';
 
 export default function ProductItem({ product }) {
   const ProductImage = chakra(NextImage, {
@@ -26,6 +28,7 @@ export default function ProductItem({ product }) {
     shouldForwardProp: (prop) =>
       ['width', 'height', 'src', 'alt'].includes(prop),
   });
+
   return (
     <Flex direction="column" shadow="lg" p={1} mb={2} align="space-between">
       <ProductImage
@@ -45,6 +48,27 @@ export default function ProductItem({ product }) {
         <Heading fontSize="1.4rem" align="center" as="h2" fontWeight="600">
           Item - {product.name}
         </Heading>
+
+        <Flex justify="center" align="center" direction="column" gap={3}>
+          <StarRatings
+            rating={product.rating}
+            starRatedColor="blue"
+            numberOfStars={5}
+            name="rating"
+            starDimension="20px"
+            starSpacing="2px"
+          />
+          <Circle
+            border={'2px solid gray'}
+            p={1}
+            // w="fit-content"
+            // h="max-content"
+            minW="3rem"
+            minH="3rem"
+          >
+            ${product.price}
+          </Circle>
+        </Flex>
         <Flex align="center" justify="space-evenly" p={3}>
           <Button layerStyle="productButton" mr={1}>
             <NextLink href="" passHref>
