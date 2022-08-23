@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   Image,
+  Link,
   Text,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -46,10 +47,14 @@ export default function ProductItem({ product }) {
         </Heading>
         <Flex align="center" justify="space-evenly" p={3}>
           <Button layerStyle="productButton" mr={1}>
-            View Product
+            <NextLink href="" passHref>
+              <Link as="a">View Product</Link>
+            </NextLink>
           </Button>
           <Button layerStyle="productButton" ml={1}>
-            Add To Cart
+            <NextLink href="" passHref>
+              <Link as="a">Add To Cart</Link>
+            </NextLink>
           </Button>
         </Flex>
       </Flex>
