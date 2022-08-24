@@ -14,8 +14,60 @@ import NextLink from 'next/link';
 import NextImage from 'next/image';
 import urlForThumbnail from '../../utils/sanityImageBuilder';
 import StarRatings from 'react-star-ratings';
+import { Store } from '../../utils/Store';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { addToCartHandler } from '../../handlers/addToCartHandler';
 
 export default function ProductItem({ product }) {
+  const { state, dispatch } = React.useContext(Store);
+  const { cart } = state;
+
+  const addToCartHandler = async () => {
+    const existingItem = cart.cartItems.find(
+      (item) => item._id === product._id
+    );
+    const quantity = existingItem ? existingItem.quantity + 1 : 1;
+
+    let data;
+    try {
+      const result = await axios.get(`/api/products/${product._id}`);
+      data = await result.data;
+      // } catch (err) {
+      //   console.log(err.message);
+      // }
+
+      if (data.countInStock < quantity) {
+        toast('Sorry, the product is out of stock', {
+          type: 'error',
+        });
+        return;
+      }
+
+      dispatch({
+        type: 'CART_ADD_ITEM',
+        payload: {
+          _key: product._id,
+          name: product.name,
+          countInStock: product.countInStock,
+          slug: product.slug.current,
+          price: product.price,
+          image: urlForThumbnail(product.image),
+          quantity,
+        },
+      });
+
+      toast(`${product.name} added to the cart`, {
+        type: 'success',
+      });
+    } catch (err) {
+      console.log(err);
+      toast(`${err.message}`, {
+        type: 'error',
+      });
+    }
+  };
+
   const ProductImage = chakra(NextImage, {
     baseStyle: {
       maxH: 420,
@@ -69,16 +121,14 @@ export default function ProductItem({ product }) {
             ${product.price}
           </Circle>
         </Flex>
-        <Flex align="center" justify="space-evenly" p={3}>
+        <Flex align="center" justify="space-evenly" p={3} gap={2}>
           <Button layerStyle="productButton" mr={1}>
-            <NextLink href="" passHref>
+            <NextLink href={`/product/${product.slug.current}`} passHref>
               <Link as="a">View Product</Link>
             </NextLink>
           </Button>
-          <Button layerStyle="productButton" ml={1}>
-            <NextLink href="" passHref>
-              <Link as="a">Add To Cart</Link>
-            </NextLink>
+          <Button onClick={addToCartHandler} layerStyle="productButton" ml={1}>
+            Add To Cart
           </Button>
         </Flex>
       </Flex>

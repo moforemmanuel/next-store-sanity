@@ -13,7 +13,11 @@ const layerStyles = {
   productButton: {
     backgroundColor: 'transparent',
     outlineColor: 'gray.500',
-    transition: 'all 1s',
+    border: 'none',
+    transition: 'all 0.7s',
+    borderRadius: '1rem',
+    rounded: '1rem',
+    variant: 'outline',
     '&:hover': {
       backgroundColor: 'gray.500',
       color: 'white',
