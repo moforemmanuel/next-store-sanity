@@ -6,8 +6,10 @@ export const Store = createContext();
 
 const initialState = {
   cart: {
-    cartItems: Cookies.get('cartItems')
-      ? JSON.parse(Cookies.get('cartItems'))
+    cartItems: Cookies.get('userInfo')
+      ? Cookies.get('cartItems')
+        ? JSON.parse(Cookies.get('cartItems'))
+        : []
       : [],
   },
   userInfo: Cookies.get('userInfo')
@@ -42,6 +44,10 @@ function reducer(state, action) {
 
     case 'USER_LOGIN': {
       return { ...state, userInfo: action.payload };
+    }
+
+    case 'USER_LOGOUT': {
+      return { ...state, userInfo: null };
     }
 
     default:
