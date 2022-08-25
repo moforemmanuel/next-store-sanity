@@ -51,6 +51,17 @@ handler.post(async (req, res) => {
   //     isAdmin: false,
   //   };
 
+  const existingUser = await client.fetch(
+    `*[_type == "user" && email == $email][0]`,
+    {
+      email: req.body.email,
+    }
+  );
+
+  if (existingUser) {
+    return res.status(401).send({ message: 'Email already exists' });
+  }
+
   const doc = {
     _type: 'user',
     firstName: req.body.firstName,
@@ -62,17 +73,15 @@ handler.post(async (req, res) => {
 
   try {
     const data = await client.create(doc);
-    console.log(data);
+    console.log('from /api/users/register/ :', data);
 
     const user = data;
 
     const token = signToken(user);
     res.status(200).send({ ...user, token });
   } catch (err) {
-    console.error(err);
-    console.error(err.data);
-    console.error(err.data.message);
-    res.status(500).send({ message: err.message });
+    console.log('from /api/users/register/ :', err);
+    res.status(500).send(err);
   }
 });
 

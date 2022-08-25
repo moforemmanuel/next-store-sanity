@@ -28,6 +28,7 @@ import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import client from '../utils/sanityClient';
+import getError from '../utils/error';
 
 function RegisterScreen() {
   const router = useRouter();
@@ -49,18 +50,18 @@ function RegisterScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const checkUser = async (email) => {
-    // const {document} = context;
-    const data = await client.fetch(
-      `*[_type == "user" && email == $email][0]`,
-      {
-        email: email,
-      }
-    );
+  // const checkUser = async (email) => {
+  //   // const {document} = context;
+  //   const data = await client.fetch(
+  //     `*[_type == "user" && email == $email][0]`,
+  //     {
+  //       email: email,
+  //     }
+  //   );
 
-    console.log('data: ', data);
-    return data ? true : false;
-  };
+  //   console.log('data: ', data);
+  //   return data ? true : false;
+  // };
 
   const submitHandler = async ({
     firstName,
@@ -76,13 +77,13 @@ function RegisterScreen() {
       return;
     }
 
-    const emailExists = await checkUser(email);
-    if (emailExists) {
-      toast('A user with that email already exists', {
-        type: 'error',
-      });
-      return;
-    }
+    // const emailExists = await checkUser(email);
+    // if (emailExists) {
+    //   toast('A user with that email already exists', {
+    //     type: 'error',
+    //   });
+    //   return;
+    // }
 
     try {
       const { data } = await axios.post('/api/users/register', {
@@ -97,7 +98,7 @@ function RegisterScreen() {
       router.push('/');
       toast.success(`Welcome aboard ${data.firstName}`);
     } catch (err) {
-      toast(err.message, {
+      toast(getError(err), {
         type: 'error',
       });
     }

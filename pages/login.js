@@ -22,15 +22,47 @@ import Form from '../components/Form/Form';
 import NextLink from 'next/link';
 import { useFormErrorStyles } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
+import { toast } from 'react-toastify';
+import { Store } from '../utils/Store';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 function LoginScreen() {
+  const router = useRouter();
+  const { state, dispatch } = React.useContext(Store);
+  const { userInfo } = state;
+
+  // redirect if user logged in already
+  React.useEffect(() => {
+    if (userInfo) {
+      router.push('/');
+    }
+  }, [router, userInfo]);
+
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const submitHandler = async ({ email, password }) => {};
+  const submitHandler = async ({ email, password }) => {
+    try {
+      const { data } = await axios.post('/api/users/login', {
+        email,
+        password,
+      });
+
+      dispatch({ type: 'USER_LOGIN', payload: data });
+      Cookies.set('userInfo', JSON.stringify(data));
+      router.push('/');
+      toast.success(`Welcome back ${data.firstName}`);
+    } catch (err) {
+      toast(err.message, {
+        type: 'error',
+      });
+    }
+  };
 
   return (
     <Layout>
