@@ -17,22 +17,37 @@ import StarRatings from 'react-star-ratings';
 import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { addToCartHandler } from '../../handlers/addToCartHandler';
-
+import { useRouter } from 'next/router';
 export default function ProductItem({ product }) {
+  const router = useRouter();
   const { state, dispatch } = React.useContext(Store);
   const { cart } = state;
+  const [buttonLoading, setButtonLoading] = React.useState(false);
+  React.useEffect(() => {
+    console.log(buttonLoading);
+    // const toggleButtonLoading = () => {
+    //   setButtonLoading(!buttonLoading);
+    // };
+  }, [buttonLoading]);
 
-  const addToCartHandler = async () => {
+  console.log(cart);
+
+  let productInCart = false;
+  for (let item of cart.cartItems) {
+    if (item._key === product._id) {
+      productInCart = true;
+    }
+  }
+
+  const addToCartHandler = async (callback) => {
     const existingItem = cart.cartItems.find(
       (item) => item._id === product._id
     );
     const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
-    let data;
     try {
       const result = await axios.get(`/api/products/${product._id}`);
-      data = await result.data;
+      const data = await result.data;
       // } catch (err) {
       //   console.log(err.message);
       // }
@@ -60,12 +75,15 @@ export default function ProductItem({ product }) {
       toast(`${product.name} added to the cart`, {
         type: 'success',
       });
+
+      router.push('/cart');
     } catch (err) {
       console.log(err);
       toast(`${err.message}`, {
         type: 'error',
       });
     }
+    callback(false);
   };
 
   const ProductImage = chakra(NextImage, {
@@ -127,8 +145,22 @@ export default function ProductItem({ product }) {
               <Link as="a">View Product</Link>
             </NextLink>
           </Button>
-          <Button onClick={addToCartHandler} layerStyle="productButton" ml={1}>
-            Add To Cart
+          <Button
+            disabled={productInCart}
+            isLoading={buttonLoading ? true : false}
+            loadingText="Adding"
+            // colorScheme="teal"
+            onClick={() => {
+              setButtonLoading(true);
+              addToCartHandler(setButtonLoading);
+              // setTimeout(() => {
+              //   setButtonLoading(false);
+              // }, 5000);
+            }}
+            layerStyle="productButton"
+            ml={1}
+          >
+            {productInCart ? 'In' : 'Add To'} Cart
           </Button>
         </Flex>
       </Flex>

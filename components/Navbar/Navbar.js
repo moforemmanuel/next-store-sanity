@@ -17,8 +17,15 @@ import {
   Stack,
   useColorMode,
   Switch,
+  Badge,
+  Text,
+  Circle,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, SunIcon, MoonIcon } from '@chakra-ui/icons';
+import { TiShoppingCart } from 'react-icons/ti';
+import NextLink from 'next/link';
+import { Store } from '../../utils/Store';
+import React from 'react';
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 
@@ -38,13 +45,22 @@ const NavLink = ({ children }) => (
 );
 
 export default function Simple() {
+  const { state } = React.useContext(Store);
+  const { cart } = state;
   const { colorMode, toggleColorMode } = useColorMode();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box
+        bg={useColorModeValue('gray.100', 'gray.900')}
+        px={4}
+        position="fixed"
+        w="100%"
+        zIndex="1000"
+        // backdropFilter="saturate(180%) blur(5px)"
+      >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             border={'thin solid gray'}
@@ -69,7 +85,74 @@ export default function Simple() {
               ))}
             </HStack>
           </HStack>
-          <Flex alignItems={'center'}>
+          <Flex alignItems={'center'} justify="space-evenly">
+            <Switch
+              m={3}
+              onChange={toggleColorMode}
+              isChecked={colorMode === 'light' ? false : true}
+              colorScheme="green"
+              size="lg"
+              display="flex"
+              alignItems="center"
+              transitionDuration={4}
+            >
+              {colorMode === 'light' ? (
+                <SunIcon
+                  size="2xl"
+                  position={'absolute'}
+                  top="1.5"
+                  left="50%"
+                  color="inherit"
+                />
+              ) : (
+                <MoonIcon
+                  size="lg"
+                  position={'absolute'}
+                  top="1.5"
+                  left="1.5"
+                  color="gray.800"
+                />
+              )}
+            </Switch>
+            {/* }
+              /> */}
+            {/* <IconButton
+                aria-label="Toggle light dark mode"
+                onClick={toggleColorMode}
+                icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              /> */}
+
+            <Flex justify="center" gap={0} position="relative">
+              <NextLink href="/cart" passHref>
+                <Link>
+                  <Box mr={3}>
+                    <TiShoppingCart p={0} fontSize="2rem" />
+                    <Badge
+                      width="1.2rem"
+                      height="1.2rem"
+                      rounded="2rem"
+                      mr={2}
+                      colorScheme="teal"
+                      // border={'thin solid blue'}
+                      position="absolute"
+                      left={5}
+                      top={-2}
+                      display="inline"
+                    >
+                      <Text
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        align="center"
+                        fontWeight="extrabold"
+                      >
+                        {cart.cartItems.length > 0 ? cart.cartItems.length : 0}
+                      </Text>
+                    </Badge>
+                  </Box>
+                </Link>
+              </NextLink>
+            </Flex>
             <Menu>
               {/* <Switch
                 m={3}
@@ -81,41 +164,7 @@ export default function Simple() {
               /> */}
               {/* <IconButton
                 icon={ */}
-              <Switch
-                m={3}
-                onChange={toggleColorMode}
-                isChecked={colorMode === 'light' ? false : true}
-                colorScheme="green"
-                size="lg"
-                display="flex"
-                alignItems="center"
-                transitionDuration={4}
-              >
-                {colorMode === 'light' ? (
-                  <SunIcon
-                    size="2xl"
-                    position={'absolute'}
-                    top="1.5"
-                    left="50%"
-                    color="inherit"
-                  />
-                ) : (
-                  <MoonIcon
-                    size="lg"
-                    position={'absolute'}
-                    top="1.5"
-                    left="1.5"
-                    color="gray.800"
-                  />
-                )}
-              </Switch>
-              {/* }
-              /> */}
-              {/* <IconButton
-                aria-label="Toggle light dark mode"
-                onClick={toggleColorMode}
-                icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              /> */}
+
               <MenuButton
                 as={Button}
                 rounded={'full'}
