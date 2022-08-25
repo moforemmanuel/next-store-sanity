@@ -29,6 +29,14 @@ function reducer(state, action) {
       return { ...state, cart: { ...state.cart, cartItems } }; //update only cart Items
     }
 
+    case 'CART_REMOVE_ITEM': {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item._key != action.payload._key
+      );
+      Cookies.set('cartItems', JSON.stringify(cartItems)); // save cartItems to cookies
+      return { ...state, cart: { ...state.cart, cartItems } }; //update only cart Items
+    }
+
     default:
       return state;
   }
