@@ -44,10 +44,10 @@ export default function ProductScreen(props) {
     );
     const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
-    let data;
+    // let data;
     try {
       const result = await axios.get(`/api/products/${product._id}`);
-      data = await result.data;
+      const data = await result.data;
       // } catch (err) {
       //   console.log(err.message);
       // }
@@ -76,7 +76,7 @@ export default function ProductScreen(props) {
         type: 'success',
       });
 
-      router.push('/');
+      router.push('/cart');
     } catch (err) {
       console.log(err);
       toast(`${err.message}`, {
