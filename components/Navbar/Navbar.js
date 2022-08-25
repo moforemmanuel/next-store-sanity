@@ -26,6 +26,9 @@ import { TiShoppingCart } from 'react-icons/ti';
 import NextLink from 'next/link';
 import { Store } from '../../utils/Store';
 import React from 'react';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 const Links = ['Index', 'Projects', 'Team'];
 
@@ -44,12 +47,26 @@ const NavLink = ({ children }) => (
 );
 
 export default function Simple() {
-  const { state } = React.useContext(Store);
+  const router = useRouter();
+  const { state, dispatch } = React.useContext(Store);
   const { cart, userInfo } = state;
   // console.log('layout data: ', userInfo);
+
   const { colorMode, toggleColorMode } = useColorMode();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const logoutClickHandler = () => {
+    try {
+      Cookies.remove('userInfo');
+      // Cookies.remove('cart');
+      dispatch({ type: 'USER_LOGOUT' });
+      toast.success('Successfully Logged out');
+      router.push('/');
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
   return (
     <>
@@ -212,7 +229,9 @@ export default function Simple() {
                     <MenuItem>Link 1</MenuItem>
                     <MenuItem>Link 2</MenuItem>
                     <MenuDivider />
-                    <MenuItem>Link 3</MenuItem>
+                    <MenuItem>
+                      <Button onClick={logoutClickHandler}>Logout</Button>
+                    </MenuItem>
                   </MenuList>
                 </Menu>
               </Flex>
