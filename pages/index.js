@@ -28,11 +28,11 @@ const ProductItem = dynamic(
 export default function Home({ products, error }) {
   // const { state, dispatch } = React.useContext(Store);
   // const cart = { state };
-  // const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
 
-  // React.useEffect(() => {
-  //   setLoading(false);
-  // }, [products]);
+  React.useEffect(() => {
+    setLoading(false);
+  }, [products]);
 
   // React.useEffect(
   //   (toast, error) => {
@@ -75,24 +75,26 @@ export default function Home({ products, error }) {
     });
 
   return (
-    <Layout>
-      {error ? (
-        <Alert status="error">
-          <Button onClick={onError}>View Error</Button>
-          <AlertIcon />
-          <AlertTitle>An Error Occurred</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
-          {products?.map((product) => (
-            <GridItem key={product.slug.current}>
-              <ProductItem product={product} />
-            </GridItem>
-          ))}
-        </SimpleGrid>
-      )}
-    </Layout>
+    !loading && (
+      <Layout>
+        {error ? (
+          <Alert status="error">
+            <Button onClick={onError}>View Error</Button>
+            <AlertIcon />
+            <AlertTitle>An Error Occurred</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        ) : (
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
+            {products?.map((product) => (
+              <GridItem key={product.slug.current}>
+                <ProductItem product={product} />
+              </GridItem>
+            ))}
+          </SimpleGrid>
+        )}
+      </Layout>
+    )
   );
 }
 
