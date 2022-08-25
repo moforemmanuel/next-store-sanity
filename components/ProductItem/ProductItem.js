@@ -24,13 +24,13 @@ export default function ProductItem({ product }) {
   const { cart } = state;
   const [buttonLoading, setButtonLoading] = React.useState(false);
   React.useEffect(() => {
-    console.log(buttonLoading);
+    // console.log(buttonLoading);
     // const toggleButtonLoading = () => {
     //   setButtonLoading(!buttonLoading);
     // };
   }, [buttonLoading]);
 
-  console.log(cart);
+  // console.log(cart);
 
   let productInCart = false;
   for (let item of cart.cartItems) {
