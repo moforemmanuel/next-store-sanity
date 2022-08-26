@@ -110,6 +110,7 @@ export default function ProductItem({ product }) {
         borderWidth={5}
         borderStyle="solid"
         borderColor="gray.800"
+        priority
       />
 
       {/* <Image src={urlForThumbnail(product.image)} alt={product.description} /> */}
