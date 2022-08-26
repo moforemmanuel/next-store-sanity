@@ -27,18 +27,25 @@ import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 
 function LoginScreen() {
   const router = useRouter();
+  const { redirect } = router.query;
   const { state, dispatch } = React.useContext(Store);
   const { userInfo } = state;
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(false);
+  }, []);
 
   // redirect if user logged in already
   React.useEffect(() => {
     if (userInfo) {
-      router.push('/');
+      router.push(redirect || '/');
     }
-  }, [router, userInfo]);
+  }, [router, userInfo, redirect]);
 
   const {
     handleSubmit,
@@ -55,7 +62,8 @@ function LoginScreen() {
 
       dispatch({ type: 'USER_LOGIN', payload: data });
       Cookies.set('userInfo', JSON.stringify(data));
-      router.push('/');
+
+      router.push(redirect || '/');
       toast.success(`Welcome back ${data.firstName}`);
     } catch (err) {
       toast(err.message, {
@@ -63,6 +71,10 @@ function LoginScreen() {
       });
     }
   };
+
+  if (loading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <Layout>
