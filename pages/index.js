@@ -14,6 +14,7 @@ import {
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 import Layout from '../components/Layout/Layout';
 // import ProductItem from '../components/ProductItem/ProductItem';
 import client from '../utils/sanityClient';
@@ -32,7 +33,7 @@ export default function Home({ products, error }) {
 
   React.useEffect(() => {
     setLoading(false);
-  }, [products]);
+  }, []);
 
   // React.useEffect(
   //   (toast, error) => {
@@ -74,8 +75,12 @@ export default function Home({ products, error }) {
       bodyStyle: {},
     });
 
+  if (loading) {
+    return <FullPageLoader />;
+  }
+
   return (
-    !loading && (
+    products && (
       <Layout>
         {error ? (
           <Alert status="error">
