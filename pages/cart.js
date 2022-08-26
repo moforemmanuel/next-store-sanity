@@ -32,6 +32,7 @@ import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 
 // import dynamic from 'next/dynamic';
 
@@ -44,6 +45,12 @@ function CartScreen() {
   // React.useEffect(() => {
   //   setMounted(true);
   // }, []);
+
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const router = useRouter();
 
@@ -109,18 +116,32 @@ function CartScreen() {
     shouldForwardProp: (prop) =>
       ['width', 'height', 'src', 'alt'].includes(prop),
   });
+
+  if (loading) {
+    return <FullPageLoader />;
+  }
   return (
     <Layout>
-      <Heading align="center">Shopping Cart</Heading>
+      <Heading mt="4rem" align="center">
+        Shopping Cart
+      </Heading>
       {cartItems.length === 0 ? (
-        <Box h="50vh">
-          <Text align="center">Cart is empty</Text>
+        <Flex
+          // border={'thin solid red'}
+          direction="column"
+          gap="5"
+          justify="center"
+          align="center"
+          minH="20vh"
+        >
+          <Text align>Cart is empty</Text>
           <NextLink href="/" passHref>
             <Link>
               <Button>Go Shopping</Button>
             </Link>
           </NextLink>
-        </Box>
+          {/* <Button w="fit-content">Go Shopping</Button> */}
+        </Flex>
       ) : (
         <SimpleGrid
           gap={2}
@@ -232,6 +253,7 @@ function CartScreen() {
                       layerStyle="productButton"
                       align="center"
                       width="90%"
+                      onClick={() => router.push('/shipping')}
                     >
                       Checkout
                     </Button>
