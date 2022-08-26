@@ -29,18 +29,26 @@ import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import client from '../utils/sanityClient';
 import getError from '../utils/error';
+import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 
 function RegisterScreen() {
   const router = useRouter();
+  const { redirect } = router.query;
   const { state, dispatch } = React.useContext(Store);
   const { userInfo } = state;
+
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(false);
+  }, []);
 
   // redirect if user logged in already
   React.useEffect(() => {
     if (userInfo) {
-      router.push('/');
+      router.push(redirect || '/');
     }
-  }, [router, userInfo]);
+  }, [router, userInfo, redirect]);
   const {
     handleSubmit,
     control,
@@ -95,7 +103,7 @@ function RegisterScreen() {
 
       dispatch({ type: 'USER_LOGIN', payload: data });
       Cookies.set('userInfo', JSON.stringify(data));
-      router.push('/');
+      router.push(redirect || '/');
       toast.success(`Welcome aboard ${data.firstName}`);
     } catch (err) {
       toast(getError(err), {
@@ -103,6 +111,10 @@ function RegisterScreen() {
       });
     }
   };
+
+  if (loading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <Layout>
@@ -171,7 +183,7 @@ function RegisterScreen() {
                       }}
                       render={({ field }) => (
                         <FormControl
-                          id="firstName"
+                          id="lastName"
                           isInvalid={errors.lastName}
                           {...field}
                         >
@@ -333,7 +345,10 @@ function RegisterScreen() {
                 <Stack pt={6}>
                   <Text align={'center'}>
                     Already a user?{' '}
-                    <NextLink href="/login" passHref>
+                    <NextLink
+                      href={`/login?redirect=${redirect || '/'}`}
+                      passHref
+                    >
                       <Link color={'blue.400'}>Login</Link>
                     </NextLink>
                   </Text>
