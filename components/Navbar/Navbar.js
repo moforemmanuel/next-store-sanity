@@ -58,11 +58,13 @@ export default function Simple() {
 
   const logoutClickHandler = () => {
     try {
-      Cookies.remove('userInfo');
-      // Cookies.remove('cart');
       dispatch({ type: 'USER_LOGOUT' });
-      toast.success('Successfully Logged out');
+      Cookies.remove('userInfo');
+      Cookies.remove('cartItems');
+      Cookies.remove('shippingAddress');
+      Cookies.remove('paymentMethod');
       router.push('/');
+      toast.success('Successfully Logged out');
     } catch (err) {
       toast.error(err.message);
     }
@@ -229,7 +231,7 @@ export default function Simple() {
                     <MenuItem>Link 1</MenuItem>
                     <MenuItem>Link 2</MenuItem>
                     <MenuDivider />
-                    <MenuItem>
+                    <MenuItem as={Box}>
                       <Button onClick={logoutClickHandler}>Logout</Button>
                     </MenuItem>
                   </MenuList>

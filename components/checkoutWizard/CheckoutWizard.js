@@ -17,7 +17,7 @@ export default function CheckoutWizard({ activeStep = 0 }) {
         alignSelf="center"
         // left={{ base: '25%' }}
         activeStep={activeStep}
-        // responsive={false}
+        responsive={true}
         orientation={'horizontal'}
         labelOrientation={'vertical'}
       >
