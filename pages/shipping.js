@@ -44,15 +44,15 @@ function ShippingScreen() {
 
   const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    // if (Cookies.get('userInfo')) {
-    //   setLoading(false);
-    // }
-    setLoading(false);
-  }, []);
+  // React.useEffect(() => {
+  //   // if (Cookies.get('userInfo')) {
+  //   //   setLoading(false);
+  //   // }
+  //   setLoading(false);
+  // }, []);
 
   React.useEffect(() => {
-    // setLoading(false);
+    setLoading(false);
 
     if (!userInfo) {
       router.push('/login?redirect=/shipping');
@@ -68,16 +68,13 @@ function ShippingScreen() {
     setValue('address', shippingAddress.address);
   }, [router, setValue, shippingAddress, userInfo]);
 
-  const submitHandler = ({
-    firstName,
-    lastName,
-    email,
-    country,
-    state,
-    city,
-    zip,
-    address,
-  }) => {
+  const boxBgColor = useColorModeValue('white', 'gray.700');
+  const flexBgColor = useColorModeValue('gray.50', 'gray.800');
+
+  const submitHandler = (
+    e,
+    { firstName, lastName, email, country, state, city, zip, address }
+  ) => {
     const details = {
       firstName,
       lastName,
@@ -94,8 +91,7 @@ function ShippingScreen() {
     });
 
     Cookies.set('shippingAddress', JSON.stringify(details));
-
-    router.push('/');
+    router.push('/payment');
   };
 
   if (loading) {
@@ -111,7 +107,7 @@ function ShippingScreen() {
             minH={'80vh'}
             align={'center'}
             justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}
+            bg={flexBgColor}
           >
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
               <Stack align={'center'}>
@@ -122,12 +118,7 @@ function ShippingScreen() {
                   please enter your shipping details
                 </Text>
               </Stack>
-              <Box
-                rounded={'lg'}
-                bg={useColorModeValue('white', 'gray.700')}
-                boxShadow={'lg'}
-                p={8}
-              >
+              <Box rounded={'lg'} bg={boxBgColor} boxShadow={'lg'} p={8}>
                 <Stack spacing={4}>
                   <Stack direction={['column', 'row']}>
                     <Box>
