@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { StepsStyleConfig } from 'chakra-ui-steps';
 
 const config = {
   initialColorMode: 'system',
@@ -48,7 +49,31 @@ const layerStyles = {
 
 const textStyles = {};
 
+const CustomSteps = {
+  ...StepsStyleConfig,
+  baseStyle: (props) => {
+    return {
+      ...StepsStyleConfig.baseStyle(props),
+      connector: {
+        ...StepsStyleConfig.baseStyle(props).connector,
+        // width: '90%',
+        // margin: '0 auto',
+      },
+
+      label: {
+        ...StepsStyleConfig.baseStyle(props).label,
+        display: '',
+      },
+      icon: {
+        ...StepsStyleConfig.baseStyle(props).icon,
+        margin: '1rem',
+      },
+    };
+  },
+};
+
 const components = {
+  Steps: CustomSteps,
   Link: {
     baseStyle: {
       '&:hover': { textDecoration: 'none' },
