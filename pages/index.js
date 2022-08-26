@@ -16,15 +16,15 @@ import React from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 import Layout from '../components/Layout/Layout';
-// import ProductItem from '../components/ProductItem/ProductItem';
+import ProductItem from '../components/ProductItem/ProductItem';
 import client from '../utils/sanityClient';
 import { Store } from '../utils/Store';
 
 // dynamically import productItem component to avoid ssr mismatch
-const ProductItem = dynamic(
-  () => import('../components/ProductItem/ProductItem'),
-  { ssr: false }
-);
+// const ProductItem = dynamic(
+//   () => import('../components/ProductItem/ProductItem'),
+//   { ssr: false }
+// );
 
 export default function Home({ products, error }) {
   // const { state, dispatch } = React.useContext(Store);
