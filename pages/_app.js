@@ -6,6 +6,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import theme from '../themes/theme';
 import { StoreProvider } from '../utils/Store';
 import { ToastContainer } from 'react-toastify';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -13,7 +14,11 @@ function MyApp({ Component, pageProps }) {
       {/* <ToastContainer> */}
       <StoreProvider>
         <ToastContainer theme="colored" />
-        <Component {...pageProps} />
+        <PayPalScriptProvider deferLoading={true}>
+          {/*deferLoading, dont load by default, it is loaded by
+          loadPaypalScript function*/}
+          <Component {...pageProps} />
+        </PayPalScriptProvider>
       </StoreProvider>
       {/* </ToastContainer> */}
     </ChakraProvider>
