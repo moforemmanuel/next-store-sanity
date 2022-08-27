@@ -48,6 +48,7 @@ const NavLink = ({ children }) => (
 
 export default function Simple() {
   const router = useRouter();
+  const { route } = router;
   const { state, dispatch } = React.useContext(Store);
   const { cart, userInfo } = state;
   // console.log('layout data: ', userInfo);
@@ -58,12 +59,23 @@ export default function Simple() {
 
   const logoutClickHandler = () => {
     try {
+      console.log('navbar router: ', router);
+      console.log('navbar router route: ', router.route);
+      console.log('navbar router pathname: ', router.pathname);
+
       dispatch({ type: 'USER_LOGOUT' });
       Cookies.remove('userInfo');
       // Cookies.remove('cartItems');
       // Cookies.remove('shippingAddress');
       // Cookies.remove('paymentMethod');
-      router.push('/');
+      // console.log('navbar redirect: ', re);
+
+      // router.push(route === '/' ? `/login?redirect=${route}` : '/'); //each page will redirect
+
+      if (router === '/') {
+        router.push('/');
+      }
+
       toast.success('Successfully Logged out');
     } catch (err) {
       toast.error(err.message);
