@@ -12,8 +12,8 @@ handler.get(async (req, res) => {
     console.log('in try..: id: ', req.query.id);
     console.log('in try..: query: ', req.query);
     const order = await client.fetch(`*[_type == "order" && _id == $id][0]`, {
-      id: req.query.order,
-      // id: req.query.id,
+      // id: req.query.order,
+      id: req.query.id,
     });
     console.log(order);
     res.send(order);
