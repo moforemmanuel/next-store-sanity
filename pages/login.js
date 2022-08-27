@@ -72,6 +72,9 @@ function LoginScreen() {
     }
   };
 
+  const flexBgColor = useColorModeValue('gray.50', 'gray.800');
+  const boxBgColor = useColorModeValue('white', 'gray.700');
+
   if (loading) {
     return <FullPageLoader />;
   }
@@ -87,7 +90,7 @@ function LoginScreen() {
           minH={'100vh'}
           align={'center'}
           justify={'center'}
-          bg={useColorModeValue('gray.50', 'gray.800')}
+          bg={flexBgColor}
         >
           <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
             <Stack align={'center'}>
@@ -99,12 +102,7 @@ function LoginScreen() {
                 <Link color={'blue.400'}>features</Link> ✌️
               </Text>
             </Stack>
-            <Box
-              rounded={'lg'}
-              bg={useColorModeValue('white', 'gray.700')}
-              boxShadow={'lg'}
-              p={8}
-            >
+            <Box rounded={'lg'} bg={boxBgColor} boxShadow={'lg'} p={8}>
               <Stack spacing={4}>
                 <Box>
                   <Controller

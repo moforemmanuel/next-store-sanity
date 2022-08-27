@@ -25,6 +25,8 @@ import { Store } from '../utils/Store.js';
 import dynamic from 'next/dynamic.js';
 import Cookies from 'js-cookie';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader.js';
+import { toast } from 'react-toastify';
+import getError from '../utils/error.js';
 
 function ShippingScreen() {
   const {
@@ -71,27 +73,37 @@ function ShippingScreen() {
   const boxBgColor = useColorModeValue('white', 'gray.700');
   const flexBgColor = useColorModeValue('gray.50', 'gray.800');
 
-  const submitHandler = (
-    e,
-    { firstName, lastName, email, country, state, city, zip, address }
-  ) => {
-    const details = {
-      firstName,
-      lastName,
-      email,
-      country,
-      state,
-      city,
-      zip,
-      address,
-    };
-    dispatch({
-      type: 'SAVE_SHIPPING_ADDRESS',
-      payload: details,
-    });
+  const submitHandler = ({
+    firstName,
+    lastName,
+    email,
+    country,
+    state,
+    city,
+    zip,
+    address,
+  }) => {
+    try {
+      const details = {
+        firstName,
+        lastName,
+        email,
+        country,
+        state,
+        city,
+        zip,
+        address,
+      };
+      dispatch({
+        type: 'SAVE_SHIPPING_ADDRESS',
+        payload: details,
+      });
 
-    Cookies.set('shippingAddress', JSON.stringify(details));
-    router.push('/payment');
+      Cookies.set('shippingAddress', JSON.stringify(details));
+      router.push('/payment');
+    } catch (err) {
+      toast.error(getError(err));
+    }
   };
 
   if (loading) {
@@ -246,7 +258,7 @@ function ShippingScreen() {
 
                     <Box>
                       <Controller
-                        name="State"
+                        name="state"
                         control={control}
                         defaultValue=""
                         rules={{
@@ -307,7 +319,7 @@ function ShippingScreen() {
 
                     <Box>
                       <Controller
-                        name="Zip"
+                        name="zip"
                         control={control}
                         defaultValue=""
                         rules={{
@@ -337,7 +349,7 @@ function ShippingScreen() {
 
                   <Box>
                     <Controller
-                      name="Address"
+                      name="address"
                       control={control}
                       defaultValue=""
                       rules={{
@@ -371,6 +383,7 @@ function ShippingScreen() {
                     <Button
                       isLoading={isSubmitting}
                       type="submit"
+                      // onClick={() => alert('clicked')}
                       loadingText="Submitting"
                       size="lg"
                       bg={'blue.400'}

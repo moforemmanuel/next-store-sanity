@@ -19,7 +19,6 @@ import Form from '../components/Form/Form';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 import Layout from '../components/Layout/Layout';
 import { Store } from '../utils/Store';
-import shipping from './shipping';
 
 export default function PaymentScreen() {
   const router = useRouter();
@@ -52,7 +51,7 @@ export default function PaymentScreen() {
     } else {
       dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethod });
       Cookies.set('paymentMethod', paymentMethod);
-      router.push('/place-order');
+      router.push('/placeorder');
     }
   };
 
@@ -85,7 +84,7 @@ export default function PaymentScreen() {
                     <FormControl>
                       <RadioGroup
                         value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        onChange={(e) => setPaymentMethod(e)}
                       >
                         <Stack direction="column">
                           <Radio value="paypal">Paypal</Radio>

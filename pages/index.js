@@ -17,7 +17,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 import Layout from '../components/Layout/Layout';
 import ProductItem from '../components/ProductItem/ProductItem';
-import client from '../utils/sanityClient';
+import getClient from '../utils/sanityClient';
 import { Store } from '../utils/Store';
 
 // dynamically import productItem component to avoid ssr mismatch
@@ -70,7 +70,7 @@ export default function Home({ products, error }) {
   }
 
   const onError = () =>
-    toast.success(error, {
+    toast.error(error, {
       autoClose: 1000,
       bodyStyle: {},
     });
@@ -107,6 +107,7 @@ export async function getStaticProps() {
   let products = [];
   let error = '';
   try {
+    const client = getClient();
     products = await client.fetch(`*[_type == "product"]`);
     // console.log(products);
   } catch (err) {
