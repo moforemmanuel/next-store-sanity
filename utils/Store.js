@@ -63,10 +63,10 @@ function reducer(state, action) {
       return {
         ...state,
         userInfo: null,
-        cart: {
-          // cartItems: [],
-          shippingAddress: {},
-        },
+        // cart: {
+        //   // cartItems: [],
+        //   // shippingAddress: {},
+        // },
       };
     }
 
