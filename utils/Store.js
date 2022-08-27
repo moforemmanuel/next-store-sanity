@@ -18,7 +18,7 @@ const initialState = {
       ? JSON.parse(Cookies.get('shippingAddress'))
       : {},
     paymentMethod: Cookies.get('paymentMethod')
-      ? JSON.parse(Cookies.get('paymentMethod'))
+      ? Cookies.get('paymentMethod')
       : '',
   },
 };
@@ -46,6 +46,13 @@ function reducer(state, action) {
       );
       Cookies.set('cartItems', JSON.stringify(cartItems)); // save cartItems to cookies
       return { ...state, cart: { ...state.cart, cartItems } }; //update only cart Items
+    }
+
+    case 'CART_CLEAR': {
+      return {
+        ...state,
+        cart: { ...state.cart, cartItems: [] },
+      };
     }
 
     case 'USER_LOGIN': {
