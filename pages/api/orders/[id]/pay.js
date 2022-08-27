@@ -21,7 +21,7 @@ handler.put(async (req, res) => {
   };
   try {
     await client.patch(doc._id).set(doc.body).commit();
-    res.send({ message: 'Order Pai' });
+    res.send({ message: 'Order Paid' });
   } catch (err) {
     console.log(err);
     res.send(err);
