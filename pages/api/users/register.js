@@ -1,20 +1,20 @@
 import nc from 'next-connect';
 import bcrypt from 'bcryptjs';
-import axios from 'axios';
-import config from '../../../config';
+// import axios from 'axios';
+// import config from '../../../config';
 import { signToken } from '../../../utils/auth';
-import client from '../../../utils/sanityClient';
+import getClient from '../../../utils/sanityClient';
 
 const handler = nc();
 
 handler.post(async (req, res) => {
-  const projectId = config.SANITY_PROJECT_ID;
-  const dataset = config.NODE_ENV;
-  const apiVersion = config.SANITY_API_VERSION;
+  // const projectId = config.SANITY_PROJECT_ID;
+  // const dataset = config.NODE_ENV;
+  // const apiVersion = config.SANITY_API_VERSION;
 
   // to update data in sanity, we need to use a token with write access
   const tokenWithWriteAccess = process.env.SANITY_AUTH_TOKEN;
-
+  const client = getClient(tokenWithWriteAccess);
   //to update data in sanity, we use a mutation array, containing list of mutations to update sanityDB
   // const mutations = [
   //   {
@@ -78,7 +78,7 @@ handler.post(async (req, res) => {
     const user = data;
 
     const token = signToken(user);
-    res.status(200).send({ ...user, token });
+    res.status(201).send({ ...user, token });
   } catch (err) {
     console.log('from /api/users/register/ :', err);
     res.status(500).send(err);

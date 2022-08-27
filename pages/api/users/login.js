@@ -1,13 +1,13 @@
 import nc from 'next-connect';
 import bcrypt from 'bcryptjs';
-import config from '../../../config';
 import { signToken } from '../../../utils/auth';
-import client from '../../../utils/sanityClient';
+import getClient from '../../../utils/sanityClient';
 
 const handler = nc();
 
 handler.post(async (req, res) => {
   try {
+    const client = getClient(process.env.SANITY_AUTH_TOKEN)
     const data = await client.fetch(
       `*[_type == "user" && email == $email][0]`,
       {

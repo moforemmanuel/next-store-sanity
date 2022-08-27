@@ -1,10 +1,11 @@
 import nc from 'next-connect';
-import client from '../../../utils/sanityClient';
+import getClient from '../../../utils/sanityClient';
 
 const handler = nc();
 
 handler.get(async (req, res) => {
   try {
+    const client = getClient(process.env.SANITY_AUTH_TOKEN);
     console.log('query: ', req.query);
     const product = await client.fetch(
       `*[_type == "product" && _id == $id][0]`,
