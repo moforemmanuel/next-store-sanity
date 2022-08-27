@@ -4,12 +4,15 @@ import FullPageLoader from '../../components/fullPageLoader/FullPageLoader';
 import Layout from '../../components/Layout/Layout';
 import {
   Box,
+  Button,
   chakra,
+  CircularProgress,
   Flex,
   GridItem,
   Heading,
   HStack,
   Link,
+  shouldForwardProp,
   SimpleGrid,
   Table,
   TableContainer,
@@ -28,6 +31,7 @@ import { Store } from '../../utils/Store';
 import getError from '../../utils/error';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
 function reducer(state, action) {
   switch (action.type) {
@@ -42,6 +46,22 @@ function reducer(state, action) {
     case 'FETCH_FAIL': {
       return { ...state, loading: false, error: action.payload };
     }
+
+    case 'PAY_REQUEST': {
+      return { ...state, loadingPay: true };
+    }
+
+    case 'PAY_SUCCESS': {
+      return { ...state, loadingPay: false, successPay: true };
+    }
+
+    case 'PAY_FAIL': {
+      return { ...state, loadingPay: false, errorPay: action.payload };
+    }
+
+    case 'PAY_RESET': {
+      return { ...state, loadingPay: false, successPay: false, errorPay: '' };
+    }
   }
 }
 function OrderScreen({ params }) {
@@ -54,11 +74,15 @@ function OrderScreen({ params }) {
   //   setLoading(false);
   // }, []);
 
-  const [{ loading, error, order }, dispatch] = React.useReducer(reducer, {
-    loading: true,
-    order: {},
-    error: '',
-  });
+  const [{ loading, error, order, successPay }, dispatch] = React.useReducer(
+    reducer,
+    {
+      loading: true,
+      order: {},
+      error: '',
+      successPay: false,
+    }
+  );
 
   const {
     shippingAddress,
@@ -74,12 +98,14 @@ function OrderScreen({ params }) {
     deliveredAt,
   } = order;
 
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
   React.useEffect(() => {
     if (!userInfo) {
       router.push('/login');
     }
 
-    (async function fetchOrder() {
+    async function fetchOrder() {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
         const { data } = await axios.get(`/api/orders/${orderId}`, {
@@ -90,8 +116,36 @@ function OrderScreen({ params }) {
         dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
         toast.error(error);
       }
-    })();
-  }, [router, userInfo, orderId, error]);
+    }
+
+    if (!order._id || successPay || (order._id && order._id !== orderId)) {
+      fetchOrder();
+      // if (successPay) {
+      //   dispatch({ type: 'PAY_RESET' });
+      // }
+    } else {
+      const loadPaypalScript = async () => {
+        const { data: clientId } = await axios.get('/api/keys/paypal', {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+
+        paypalDispatch({
+          type: 'resetOptions',
+          value: {
+            'client-id': clientId,
+            currency: 'USD',
+          },
+        });
+
+        paypalDispatch({
+          type: 'setLoadingStatus',
+          value: 'pending',
+        });
+      };
+
+      loadPaypalScript();
+    }
+  }, [router, userInfo, orderId, error, order, paypalDispatch, successPay]);
 
   const ProductImage = chakra(NextImage, {
     baseStyle: {
@@ -105,6 +159,48 @@ function OrderScreen({ params }) {
     shouldForwardProp: (prop) =>
       ['width', 'height', 'src', 'alt'].includes(prop),
   });
+
+  const CustomPayPalButtons = chakra(PayPalButtons, {
+    shouldForwardProp: (prop) =>
+      [onApprove, onError, createOrder].includes(prop),
+  });
+
+  function createOrder(data, actions) {
+    return actions.order
+      .create({
+        purchase_units: [{ amount: { value: totalPrice } }],
+      })
+      .then((orderID) => {
+        return orderID;
+      })
+      .catch((err) => {
+        toast.error(getError(err));
+      });
+  }
+
+  function onApprove(data, actions) {
+    actions.order.capture().then(async (details) => {
+      try {
+        dispatch({ type: 'PAY_REQUEST' });
+        const { data } = await axios.put(
+          `/api/orders/${order._id}/pay`,
+          details,
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: 'PAY_SUCCESS', payload: data });
+        toast.success(`Order ${order._id} paid`);
+      } catch (err) {
+        dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+        toast.error(getError(err));
+      }
+    });
+  }
+
+  function onError(err) {
+    toast.error(getError(err));
+  }
 
   if (loading) {
     return <FullPageLoader />;
@@ -274,6 +370,20 @@ function OrderScreen({ params }) {
                 <Text>${totalPrice}</Text>
               </Box>
             </HStack>
+            {!isPaid &&
+              (isPending ? (
+                <CircularProgress />
+              ) : (
+                <Box>
+                  <PayPalButtons
+                    // as={Button}
+                    createOrder={createOrder}
+                    onApprove={onApprove} //successful payment
+                    onError={onError} //payment error
+                    // isLoading={isPending}
+                  ></PayPalButtons>
+                </Box>
+              ))}
           </Flex>
         </GridItem>
       </SimpleGrid>
