@@ -1,10 +1,9 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
-import Layout from '../components/Layout/Layout';
-import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
-import CheckoutWizard from '../components/checkoutWizard/CheckoutWizard';
+import FullPageLoader from '../../components/fullPageLoader/FullPageLoader';
+import Layout from '../../components/Layout/Layout';
 import {
   Box,
-  Button,
   chakra,
   Flex,
   GridItem,
@@ -22,92 +21,77 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react';
-import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
-import NextImage from 'next/image';
 import NextLink from 'next/link';
-import { toast } from 'react-toastify';
-import getError from '../utils/error';
+import NextImage from 'next/image';
+import { Store } from '../../utils/Store';
+import getError from '../../utils/error';
 import axios from 'axios';
-import Cookies from 'js-cookie';
-import dynamic from 'next/dynamic';
+import { toast } from 'react-toastify';
 
-function PlaceOrderScreen() {
+function reducer(state, action) {
+  switch (action.type) {
+    case 'FETCH_REQUEST': {
+      return { ...state, loading: true, error: '' };
+    }
+
+    case 'FETCH_SUCCESS': {
+      return { ...state, loading: false, order: action.payload, error: '' };
+    }
+
+    case 'FETCH_FAIL': {
+      return { ...state, loading: false, error: action.payload };
+    }
+  }
+}
+function OrderScreen({ params }) {
   const router = useRouter();
-  const [loading, setLoading] = React.useState(true);
-  const [loadingOrder, setLoadingOrder] = React.useState(false);
-  const { state, dispatch } = React.useContext(Store);
-  const {
-    userInfo,
-    cart: { cartItems, shippingAddress, paymentMethod },
-  } = state;
+  const { state } = React.useContext(Store);
+  const { userInfo } = state;
+  const { id: orderId } = params;
+  // const [loading, setLoading] = React.useState(true);
+  // React.useEffect(() => {
+  //   setLoading(false);
+  // }, []);
 
-  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; //123.456 = 123.46
-  const itemsPrice = round2(
-    cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  );
-  const shippingPrice = itemsPrice > 200 ? 0 : 15;
-  const taxPrice = round2(itemsPrice * 0.15);
-  const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
+  const [{ loading, error, order }, dispatch] = React.useReducer(reducer, {
+    loading: true,
+    order: {},
+    error: '',
+  });
+
+  const {
+    shippingAddress,
+    paymentMethod,
+    orderItems,
+    itemsPrice,
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+    isPaid,
+    paidAt,
+    isDelivered,
+    deliveredAt,
+  } = order;
 
   React.useEffect(() => {
-    setLoading(false);
-
     if (!userInfo) {
-      router.push('/login?redirect=/placeorder');
-      return;
+      router.push('/login');
     }
 
-    if (userInfo && !paymentMethod) {
-      router.push('/payment');
-      toast.error('Please select a payment method');
-      return;
-    }
-
-    if (userInfo && cartItems.length == 0) {
-      router.push('/cart');
-      return;
-    }
-  }, [userInfo, router, paymentMethod, cartItems]);
-
-  const placeOrderHandler = async () => {
-    try {
-      setLoadingOrder(true);
-      const response = await axios.post(
-        '/api/orders',
-        {
-          orderItems: cartItems.map((item) => ({
-            ...item,
-            countInStock: undefined,
-            slug: undefined,
-          })),
-          shippingAddress,
-          paymentMethod,
-          itemsPrice,
-          shippingPrice,
-          taxPrice,
-          totalPrice,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
-      const orderId = await response.data;
-      await router.push(`/order/${orderId}`);
-
-      dispatch({ type: 'CART_CLEAR' });
-      Cookies.remove('cartItems');
-      setLoadingOrder(false);
-      toast.success(`order ${orderId} created`);
-
-      // router.push(`/order/${orderId}`);
-    } catch (err) {
-      setLoadingOrder(false);
-      toast.error(getError(err));
-    }
-  };
+    (async function fetchOrder() {
+      try {
+        dispatch({ type: 'FETCH_REQUEST' });
+        const { data } = await axios.get(`/api/orders/${orderId}`, {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+        toast.error(error);
+      }
+    })();
+  }, [router, userInfo, orderId, error]);
 
   const ProductImage = chakra(NextImage, {
     baseStyle: {
@@ -127,8 +111,7 @@ function PlaceOrderScreen() {
   }
   return (
     <Layout>
-      <CheckoutWizard activeStep={3}></CheckoutWizard>
-
+      <Heading>Order {orderId}</Heading>
       <SimpleGrid spacing={1} columns={3}>
         <GridItem
           gap={3}
@@ -160,8 +143,14 @@ function PlaceOrderScreen() {
                   {shippingAddress.state},{shippingAddress.country},
                   {shippingAddress.zip}
                 </Box>
+
                 <Box>
-                  <Button onClick={() => router.push('/shipping')}>Edit</Button>
+                  <Heading as="h2" variant="h2">
+                    Status{' '}
+                  </Heading>
+                  {isDelivered
+                    ? `Delivered at ${deliveredAt}`
+                    : 'Not Delivered'}
                 </Box>
               </VStack>
             </Box>
@@ -175,8 +164,12 @@ function PlaceOrderScreen() {
                 </Box>
 
                 <Box>{paymentMethod}</Box>
+
                 <Box>
-                  <Button onClick={() => router.push('/payment')}>Edit</Button>
+                  <Heading as="h2" variant="h2">
+                    Status{' '}
+                  </Heading>
+                  {isPaid ? `Paid at ${paidAt}` : 'NotPaid'}
                 </Box>
               </VStack>
             </Box>
@@ -201,7 +194,7 @@ function PlaceOrderScreen() {
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {cartItems.map((item) => (
+                        {orderItems.map((item) => (
                           <Tr key={item._key}>
                             <Td>
                               <NextLink href={`/product/${item.slug}`} passHref>
@@ -238,9 +231,6 @@ function PlaceOrderScreen() {
                     </Table>
                   </TableContainer>
                 </Box>
-                <Box>
-                  <Button onClick={() => router.push('/cart')}>Edit</Button>
-                </Box>
               </VStack>
             </Box>
           </Flex>
@@ -273,18 +263,17 @@ function PlaceOrderScreen() {
               </Box>
             </HStack>
             <HStack>
+              <Box>Tax:</Box>
+              <Box>
+                <Text>${taxPrice}</Text>
+              </Box>
+            </HStack>
+            <HStack>
               <Box>Total:</Box>
               <Box>
                 <Text>${totalPrice}</Text>
               </Box>
             </HStack>
-            <VStack>
-              <Box>
-                <Button isLoading={loadingOrder} onClick={placeOrderHandler}>
-                  Place Order
-                </Button>
-              </Box>
-            </VStack>
           </Flex>
         </GridItem>
       </SimpleGrid>
@@ -292,4 +281,10 @@ function PlaceOrderScreen() {
   );
 }
 
-export default dynamic(() => Promise.resolve(PlaceOrderScreen), { ssr: false });
+export async function getServerSideProps({ params }) {
+  return {
+    props: { params },
+  };
+}
+
+export default dynamic(() => Promise.resolve(OrderScreen), { ssr: false });
