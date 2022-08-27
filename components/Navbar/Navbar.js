@@ -241,7 +241,11 @@ export default function Simple() {
                   </MenuButton>
                   <MenuList>
                     <MenuItem>Link 1</MenuItem>
-                    <MenuItem>Link 2</MenuItem>
+                    <MenuItem>
+                      <NextLink href="/order-history" passHref>
+                        <Link>Order History</Link>
+                      </NextLink>
+                    </MenuItem>
                     <MenuDivider />
                     <MenuItem as={Box}>
                       <Button onClick={logoutClickHandler}>Logout</Button>
