@@ -60,9 +60,9 @@ export default function Simple() {
     try {
       dispatch({ type: 'USER_LOGOUT' });
       Cookies.remove('userInfo');
-      Cookies.remove('cartItems');
-      Cookies.remove('shippingAddress');
-      Cookies.remove('paymentMethod');
+      // Cookies.remove('cartItems');
+      // Cookies.remove('shippingAddress');
+      // Cookies.remove('paymentMethod');
       router.push('/');
       toast.success('Successfully Logged out');
     } catch (err) {
