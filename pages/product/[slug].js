@@ -1,6 +1,6 @@
-import { ArrowBackIcon, ChevronLeftIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
-  Box,
+  // Box,
   Button,
   Center,
   chakra,
@@ -9,9 +9,9 @@ import {
   Flex,
   Link,
   Heading,
-  IconButton,
+  // IconButton,
   Skeleton,
-  SkeletonCircle,
+  // SkeletonCircle,
   Text,
   Alert,
   AlertIcon,
@@ -20,12 +20,11 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import React from 'react';
-import StarRatings, { contextType } from 'react-star-ratings';
+import StarRatings from 'react-star-ratings';
 import Layout from '../../components/Layout/Layout';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import urlForThumbnail from '../../utils/sanityImageBuilder';
-import client from '../../utils/sanityClient';
 import { Store } from '../../utils/Store';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
@@ -34,7 +33,11 @@ import getClient from '../../utils/sanityClient';
 
 export default function ProductScreen(props) {
   const router = useRouter();
-  const { slug, product, error } = props;
+  const {
+    // slug,
+    product,
+    error,
+  } = props;
 
   const { state, dispatch } = React.useContext(Store);
   const { cart } = state;
