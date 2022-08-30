@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+// import { ReactNode } from 'react';
 import {
   Box,
   Flex,
@@ -19,7 +19,7 @@ import {
   Switch,
   Badge,
   Text,
-  Circle,
+  // Circle,
   InputGroup,
   Input,
   InputRightElement,
@@ -58,12 +58,15 @@ const NavLink = ({ children }) => (
 
 export default function Simple() {
   const router = useRouter();
-  const { route } = router;
+  // const { route } = router;
   const { state, dispatch } = React.useContext(Store);
   const { cart, userInfo } = state;
   // console.log('layout data: ', userInfo);
 
-  const [categories, setCategories] = React.useState([]);
+  const [
+    // categories,
+    setCategories,
+  ] = React.useState([]);
   const [query, setQuery] = React.useState(''); // update query with state hook
 
   React.useEffect(() => {
@@ -76,7 +79,7 @@ export default function Simple() {
       }
     };
     fetchCategories();
-  }, []); 
+  }, [setCategories]);
 
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -116,6 +119,13 @@ export default function Simple() {
     router.push(`/search?query=${query}`);
   };
 
+  const linkTextBorderColor = useColorModeValue(
+    'blackAlpha.400',
+    'whiteAlpha.500'
+  );
+
+  const linkBgColor = useColorModeValue('gray.200', 'gray.700');
+
   return (
     <>
       <Box
@@ -154,7 +164,7 @@ export default function Simple() {
                     rounded={'md'}
                     _hover={{
                       textDecoration: 'none',
-                      bg: useColorModeValue('gray.200', 'gray.700'),
+                      bg: linkBgColor,
                     }}
                   >
                     {link}
@@ -223,10 +233,7 @@ export default function Simple() {
                 <Link>
                   <Text
                     as={Button}
-                    borderColor={useColorModeValue(
-                      'blackAlpha.400',
-                      'whiteAlpha.500'
-                    )}
+                    borderColor={linkTextBorderColor}
                     borderStyle="solid"
                     borderWidth="thin"
                     fontSize="md"
