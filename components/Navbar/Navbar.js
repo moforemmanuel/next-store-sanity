@@ -240,7 +240,11 @@ export default function Simple() {
                     />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Link 1</MenuItem>
+                    <MenuItem>
+                      <NextLink href="/profile" passHref>
+                        <Link>Profile</Link>
+                      </NextLink>
+                    </MenuItem>
                     <MenuItem>
                       <NextLink href="/order-history" passHref>
                         <Link>Order History</Link>
