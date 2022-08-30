@@ -5,7 +5,7 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
+  // HStack,
   InputRightElement,
   Stack,
   Button,
@@ -27,7 +27,7 @@ import axios from 'axios';
 import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
-import client from '../utils/sanityClient';
+// import client from '../utils/sanityClient';
 import getError from '../utils/error';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 
@@ -112,6 +112,9 @@ function RegisterScreen() {
     }
   };
 
+  const flexBgColor = useColorModeValue('gray.50', 'gray.800');
+  const boxBgColor = useColorModeValue('white', 'gray.700');
+
   if (loading) {
     return <FullPageLoader />;
   }
@@ -123,7 +126,7 @@ function RegisterScreen() {
           minH={'100vh'}
           align={'center'}
           justify={'center'}
-          bg={useColorModeValue('gray.50', 'gray.800')}
+          bg={flexBgColor}
         >
           <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
             <Stack align={'center'}>
@@ -134,12 +137,7 @@ function RegisterScreen() {
                 to enjoy all of our cool features ✌️
               </Text>
             </Stack>
-            <Box
-              rounded={'lg'}
-              bg={useColorModeValue('white', 'gray.700')}
-              boxShadow={'lg'}
-              p={8}
-            >
+            <Box rounded={'lg'} bg={boxBgColor} boxShadow={'lg'} p={8}>
               <Stack spacing={4}>
                 <Stack direction={['column', 'row']}>
                   <Box>
