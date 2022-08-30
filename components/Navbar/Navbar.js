@@ -20,8 +20,17 @@ import {
   Badge,
   Text,
   Circle,
+  InputGroup,
+  Input,
+  InputRightElement,
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon, SunIcon, MoonIcon } from '@chakra-ui/icons';
+import {
+  HamburgerIcon,
+  CloseIcon,
+  SunIcon,
+  MoonIcon,
+  Search2Icon,
+} from '@chakra-ui/icons';
 import { TiShoppingCart } from 'react-icons/ti';
 import NextLink from 'next/link';
 import { Store } from '../../utils/Store';
@@ -29,6 +38,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const Links = ['Index', 'Projects', 'Team'];
 
@@ -52,6 +62,21 @@ export default function Simple() {
   const { state, dispatch } = React.useContext(Store);
   const { cart, userInfo } = state;
   // console.log('layout data: ', userInfo);
+
+  const [categories, setCategories] = React.useState([]);
+  const [query, setQuery] = React.useState(''); // update query with state hook
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get('/api/products/categories');
+        setCategories(data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+    fetchCategories();
+  }, []); 
 
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -80,6 +105,15 @@ export default function Simple() {
     } catch (err) {
       toast.error(err.message);
     }
+  };
+
+  const queryChangeHandler = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    router.push(`/search?query=${query}`);
   };
 
   return (
@@ -136,6 +170,25 @@ export default function Simple() {
             justify="space-between"
             // w="fit-content"
           >
+            <form onSubmit={submitHandler}>
+              <InputGroup
+                alignSelf={'flex-start'}
+                justifySelf={'flex-start'}
+                ml={0}
+                display={{ base: 'none', md: 'inline' }}
+                size="md"
+              >
+                <Input
+                  type="search"
+                  placeholder="Search a product"
+                  onChange={queryChangeHandler}
+                />
+                <InputRightElement>
+                  <IconButton icon={<Search2Icon />} type="submit"></IconButton>
+                </InputRightElement>
+              </InputGroup>
+            </form>
+
             <Switch
               m={3}
               mr={0}
