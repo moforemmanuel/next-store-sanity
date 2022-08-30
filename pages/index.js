@@ -3,22 +3,25 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-  Box,
+  // Box,
   Button,
-  CircularProgress,
+  // CircularProgress,
   GridItem,
   SimpleGrid,
-  Text,
-  useToast,
+  // Text,
+  // useToast,
 } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import React from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import {
+  toast,
+  // ToastContainer
+} from 'react-toastify';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
 import Layout from '../components/Layout/Layout';
 import ProductItem from '../components/ProductItem/ProductItem';
 import getClient from '../utils/sanityClient';
-import { Store } from '../utils/Store';
+// import { Store } from '../utils/Store';
 
 // dynamically import productItem component to avoid ssr mismatch
 // const ProductItem = dynamic(
