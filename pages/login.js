@@ -11,16 +11,16 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  FormHelperText,
+  // FormHelperText,
   FormErrorMessage,
-  FormErrorIcon,
+  // FormErrorIcon,
 } from '@chakra-ui/react';
 import Layout from '../components/Layout/Layout';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Form from '../components/Form/Form';
 import NextLink from 'next/link';
-import { useFormErrorStyles } from '@chakra-ui/react';
+// import { useFormErrorStyles } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { toast } from 'react-toastify';
 import { Store } from '../utils/Store';
