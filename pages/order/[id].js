@@ -4,7 +4,7 @@ import FullPageLoader from '../../components/fullPageLoader/FullPageLoader';
 import Layout from '../../components/Layout/Layout';
 import {
   Box,
-  Button,
+  // Button,
   chakra,
   CircularProgress,
   Flex,
@@ -12,7 +12,7 @@ import {
   Heading,
   HStack,
   Link,
-  shouldForwardProp,
+  // shouldForwardProp,
   SimpleGrid,
   Table,
   TableContainer,
@@ -160,10 +160,10 @@ function OrderScreen({ params }) {
       ['width', 'height', 'src', 'alt'].includes(prop),
   });
 
-  const CustomPayPalButtons = chakra(PayPalButtons, {
-    shouldForwardProp: (prop) =>
-      [onApprove, onError, createOrder].includes(prop),
-  });
+  // const CustomPayPalButtons = chakra(PayPalButtons, {
+  //   shouldForwardProp: (prop) =>
+  //     [onApprove, onError, createOrder].includes(prop),
+  // });
 
   function createOrder(data, actions) {
     return actions.order
