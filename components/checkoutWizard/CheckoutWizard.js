@@ -1,6 +1,14 @@
 import React from 'react';
-import { Step, Steps, useSteps } from 'chakra-ui-steps';
-import { Center, Flex, useBreakpoint } from '@chakra-ui/react';
+import {
+  Step,
+  Steps,
+  // useSteps
+} from 'chakra-ui-steps';
+import {
+  // Center,
+  Flex,
+  // useBreakpoint
+} from '@chakra-ui/react';
 
 export default function CheckoutWizard({ activeStep = 0 }) {
   const steps = ['Login', 'Shipping Address', 'Payment Method', 'Place Order'];
