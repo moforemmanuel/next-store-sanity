@@ -1,13 +1,13 @@
 import {
-  Box,
+  // Box,
   Button,
   chakra,
   Circle,
   Flex,
   Heading,
-  Image,
+  // Image,
   Link,
-  Text,
+  // Text,
 } from '@chakra-ui/react';
 import React from 'react';
 import NextLink from 'next/link';
