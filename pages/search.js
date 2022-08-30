@@ -11,7 +11,7 @@ import {
   GridItem,
   Heading,
   IconButton,
-  option,
+  // option,
   Select,
   SimpleGrid,
   Stack,
@@ -20,7 +20,7 @@ import {
   WrapItem,
 } from '@chakra-ui/react';
 import FullPageLoader from '../components/fullPageLoader/FullPageLoader';
-import StarRatings from 'react-star-ratings';
+// import StarRatings from 'react-star-ratings';
 import { CloseIcon } from '@chakra-ui/icons';
 import ProductItem from '../components/ProductItem/ProductItem';
 
