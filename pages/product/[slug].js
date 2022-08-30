@@ -30,6 +30,7 @@ import { Store } from '../../utils/Store';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import getClient from '../../utils/sanityClient';
 
 export default function ProductScreen(props) {
   const router = useRouter();
@@ -241,6 +242,7 @@ export async function getServerSideProps(context) {
   // const slug = { context: { params: { slug } } };
   const slug = context.params.slug;
   console.log(context.params);
+  const client = getClient();
   let product = [];
   let error = '';
   try {
