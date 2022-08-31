@@ -106,7 +106,7 @@ export default function Home({ products, error }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   let products = [];
   let error = '';
   try {
@@ -123,6 +123,6 @@ export async function getStaticProps() {
       products: products,
       error,
     },
-    revalidate: 1,
+    // revalidate: 1,
   };
 }
